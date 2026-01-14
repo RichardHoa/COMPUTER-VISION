@@ -16,10 +16,8 @@ for y in range(height):
     for x in range(width):
         r, g, b = pixels[x, y]
         # Calculate grayscale by standard formula
-        gray = int(0.299*r + 0.587*g + 0.114*b)
+        gray = int(0.8*r + 0.6*g + 0.3*b)
         gray_pixels[x, y] = gray
 
 # Save the grayscale image as BMP
-gray_image.save('output_grayscale.bmp')
-
-print('Grayscale BMP image saved as output_grayscale.bmp')
+gray_image.save('2_output_grayscale.bmp')
