@@ -35,12 +35,6 @@ class ImageProcessor:
         Returns:
             bool: True if successful, False otherwise
         """
-        # TODO: Implement image capture and saving
-        # Sinh viên cần:
-        # 1. Kiểm tra bgr_img có hợp lệ không
-        # 2. Lưu ảnh vào thư mục CapturedImage/
-        # 3. Trả về True nếu thành công, False nếu thất bại
-        pass
     
         try:
             # 1. Kiểm tra ảnh đầu vào có hợp lệ không
@@ -74,8 +68,6 @@ class ImageProcessor:
         Returns:
             Grayscale image
         """
-        # TODO: Implement grayscale conversion
-        # Sinh viên cần: Sử dụng cv2.cvtColor để chuyển sang grayscale
         pass
     
         if bgr_img is None:
@@ -98,8 +90,6 @@ class ImageProcessor:
         Returns:
             Filtered image
         """
-        # TODO: Implement Gaussian filtering
-        # Sinh viên cần: Sử dụng cv2.GaussianBlur
         pass
     
         if img is None:
@@ -596,14 +586,7 @@ class ImageProcessor:
         results = {}
         processed_img = bgr_img.copy()
         
-        # TODO: Implement complete pipeline
-        # Sinh viên cần:
-        # 1. Dựa vào tham số 'step', gọi các phương thức tương ứng
-        # 2. Lưu kết quả vào results dict
-        # 3. Visualize kết quả lên processed_img
-        # 4. Trả về (processed_img, results, process_time_ms)
-        
-        ###################### WRITE YOUR PROCESS PIPELINE HERE #########################
+        ###################### PROCESS PIPELINE HERE #########################
         step1_image = self.capture_and_save_image(bgr_img, "test_capture.bmp") ## Step 1: Capture and Save Image
         if step1_image:
             img = cv2.imread("CapturedImage/test_capture.bmp")
@@ -613,8 +596,6 @@ class ImageProcessor:
 
         gray = self.convert_to_grayscale(img)  ## Step 2: Convert to Grayscale
         processed_img = self.apply_gaussian_filter(gray) ## Step 3: Apply Gaussian Filter
-        
-        #################################################################################
         
         process_time_ms = (time.perf_counter() - start_time) * 1000
         return processed_img, results, process_time_ms

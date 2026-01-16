@@ -120,7 +120,7 @@ def capture():
             'image': data_uri, 
             'processed': processed_uri, 
             'process_time_ms': round(process_time_ms, 2),
-            'results': results,  # Additional processing results
+            'results': results,
             'step': "all"
         })
     except Exception as e:
