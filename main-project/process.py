@@ -2,6 +2,9 @@ import time
 import cv2
 import numpy as np
 import os
+from Week1_Capturing.Week1_captureSaveImg import CaptureSaveImgProcessor
+from Week2_Filtering.Week2_Ex1_Grayscale import GrayscaleProcessor
+from Week2_Filtering.Week2_Ex2_Gaussian import GaussianProcessor
 
 
 class ImageProcessor:
@@ -19,89 +22,6 @@ class ImageProcessor:
         self.tracked_objects = []   # For object tracking
         pass
     
-    # =============================================================================
-    # STEP 1: BASIC IMAGE CAPTURE (Weeks 1-2)
-    # Topic: Introduction to Computer Vision, Images as Functions & Filtering
-    # =============================================================================
-    
-    def capture_and_save_image(self, bgr_img, filename):
-        """
-        Capture and save static image from camera
-        
-        Args:
-            bgr_img: Input image in BGR format (numpy array)
-            filename: Path to save the image
-            
-        Returns:
-            bool: True if successful, False otherwise
-        """
-    
-        try:
-            # 1. Kiểm tra ảnh đầu vào có hợp lệ không
-            if bgr_img is None or not isinstance(bgr_img, np.ndarray):
-                return False
-
-            # 2. Tạo thư mục CapturedImage nếu chưa tồn tại
-            save_dir = "CapturedImage"
-            if not os.path.exists(save_dir):
-                os.makedirs(save_dir)
-
-            # Ghép đường dẫn lưu ảnh
-            save_path = os.path.join(save_dir, filename)
-
-            # 3. Lưu ảnh
-            success = cv2.imwrite(save_path, bgr_img)
-
-            return success
-
-        except Exception as e:
-            print("Error saving image:", e)
-            return False
-    
-    def convert_to_grayscale(self, bgr_img):
-        """
-        Convert BGR image to grayscale
-        
-        Args:
-            bgr_img: Input image in BGR format
-            
-        Returns:
-            Grayscale image
-        """
-        pass
-    
-        if bgr_img is None:
-            return None
-
-        # Chuyển ảnh từ BMP sang Grayscale
-        gray_img = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2GRAY)
-        return gray_img
-    
-    
-    def apply_gaussian_filter(self, img, kernel_size=(5, 5), sigma=1.0):
-        """
-        Apply Gaussian filtering to reduce noise
-        
-        Args:
-            img: Input image
-            kernel_size: Size of Gaussian kernel (must be odd)
-            sigma: Standard deviation
-            
-        Returns:
-            Filtered image
-        """
-        pass
-    
-        if img is None:
-            return None
-
-        # Áp dụng Gaussian Blur
-        filtered_img = cv2.GaussianBlur(img, kernel_size, sigma)
-        return filtered_img
-    # =============================================================================
-    # STEP 2: IMAGE PREPROCESSING (Week 3)
-    # Topic: Image Operations (Edge Detection, Convolution)
-    # =============================================================================
 
     def detect_edges_canny(self, img, threshold1=50, threshold2=150):
         """
@@ -586,16 +506,15 @@ class ImageProcessor:
         results = {}
         processed_img = bgr_img.copy()
         
-        ###################### PROCESS PIPELINE HERE #########################
-        step1_image = self.capture_and_save_image(bgr_img, "test_capture.bmp") ## Step 1: Capture and Save Image
+        step1_image = CaptureSaveImgProcessor(bgr_img, "test_capture.bmp")
         if step1_image:
             img = cv2.imread("CapturedImage/test_capture.bmp")
         if img is None:
             print("Read image failed")
             return None
 
-        gray = self.convert_to_grayscale(img)  ## Step 2: Convert to Grayscale
-        processed_img = self.apply_gaussian_filter(gray) ## Step 3: Apply Gaussian Filter
+        gray = GrayscaleProcessor(img)
+        processed_img = GaussianProcessor(gray)
         
         process_time_ms = (time.perf_counter() - start_time) * 1000
         return processed_img, results, process_time_ms
