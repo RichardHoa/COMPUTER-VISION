@@ -5,6 +5,7 @@ import os
 from Week1_Capturing.Week1_captureSaveImg import CaptureSaveImgProcessor
 from Week2_Filtering.Week2_Ex1_Grayscale import GrayscaleProcessor
 from Week2_Filtering.Week2_Ex2_Gaussian import GaussianProcessor
+from Week2_Filtering.Week2_Ex3_Median import MedianProcessor
 
 
 class ImageProcessor:
@@ -487,18 +488,9 @@ class ImageProcessor:
     # =============================================================================
     
     def process_frame(self, bgr_img):
-        """
-        Complete processing pipeline - integrates all steps
-        
-        Args:
-            bgr_img: Input image in BGR format (numpy array)
-            step: Which processing step to apply
-                  Options: 'preprocess', 'segment', 'motion', 'track', 
-                          'license_plate', 'all'
-            
-        Returns:
-            tuple: (Processed image, results dict, process time in ms)
-        """
+
+        img = cv2.imread("CapturedImage/test_capture.bmp")
+
         if bgr_img is None:
             raise ValueError("Input frame is None")
         
@@ -507,12 +499,16 @@ class ImageProcessor:
         processed_img = bgr_img.copy()
         
         img_processor = CaptureSaveImgProcessor()
-        step1_image = img_processor.capture_and_save_image(bgr_img, "test_capture.bmp")
-        if step1_image:
+        is_capture_success = img_processor.capture_and_save_image(bgr_img, "test_capture.bmp")
+
+        if is_capture_success:
             img = cv2.imread("CapturedImage/test_capture.bmp")
         if img is None:
             print("Read image failed")
             return None
+
+        median_filter = MedianProcessor()
+        success = median_filter.apply_median_filter(img)
 
         gray_processor = GrayscaleProcessor()
         gray = gray_processor.convert_to_grayscale(img)
