@@ -506,15 +506,19 @@ class ImageProcessor:
         results = {}
         processed_img = bgr_img.copy()
         
-        step1_image = CaptureSaveImgProcessor(bgr_img, "test_capture.bmp")
+        img_processor = CaptureSaveImgProcessor()
+        step1_image = img_processor.capture_and_save_image(bgr_img, "test_capture.bmp")
         if step1_image:
             img = cv2.imread("CapturedImage/test_capture.bmp")
         if img is None:
             print("Read image failed")
             return None
 
-        gray = GrayscaleProcessor(img)
-        processed_img = GaussianProcessor(gray)
+        gray_processor = GrayscaleProcessor()
+        gray = gray_processor.convert_to_grayscale(img)
+
+        gaussian_processor = GaussianProcessor()
+        processed_img = gaussian_processor.apply_gaussian_filter(gray)
         
         process_time_ms = (time.perf_counter() - start_time) * 1000
         return processed_img, results, process_time_ms
