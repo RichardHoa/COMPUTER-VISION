@@ -1,11 +1,14 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <title>Camera Capture Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
+
 <body>
   <h1>Camera Capture</h1>
   <div class="container">
@@ -19,7 +22,7 @@
       </div>
 
       <div class="video-box">
-        <img id="video-1" src="" alt="camera1 stream"/>
+        <img id="video-1" src="" alt="camera1 stream" />
         <button class="capture-btn" aria-label="Capture" onclick="capture(1)">&#128247;</button>
       </div>
 
@@ -45,7 +48,7 @@
       </div>
 
       <div class="video-box">
-        <img id="video-2" src="" alt="camera2 stream"/>
+        <img id="video-2" src="" alt="camera2 stream" />
         <button class="capture-btn" aria-label="Capture" onclick="capture(2)">&#128247;</button>
       </div>
 
@@ -62,6 +65,47 @@
     </div>
   </div>
 
+  <div id="bottom-controls">
+    <div class="filter-group">
+      <h3>Camera 1 Filter</h3>
+      <select id="filterSelect-1">
+        <option value="all">None (Original/Demo)</option>
+        <option value="grayscale">Grayscale Conversion</option>
+        <option value="gaussian">Gaussian Blur</option>
+        <option value="median">Median Blur</option>
+        <option value="sobelx">Sobel Edge Detection (X Direction)</option>
+        <option value="laplacian">Laplacian Edge Detection</option>
+        <option value="sharpening">Sharpening Filter</option>
+        <option value="bilateral">Bilateral Filter</option>
+        <option value="thresholding">Thresholding (Binary)</option>
+        <option value="erosion">Erosion</option>
+        <option value="dilation">Dilation</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <h3>Camera 2 Filter</h3>
+      <select id="filterSelect-2">
+        <option value="all">None (Original/Demo)</option>
+        <option value="grayscale">Grayscale Conversion</option>
+        <option value="gaussian">Gaussian Blur</option>
+        <option value="median">Median Blur</option>
+        <option value="sobelx">Sobel Edge Detection (X Direction)</option>
+        <option value="laplacian">Laplacian Edge Detection</option>
+        <option value="sharpening">Sharpening Filter</option>
+        <option value="bilateral">Bilateral Filter</option>
+        <option value="thresholding">Thresholding (Binary)</option>
+        <option value="erosion">Erosion</option>
+        <option value="dilation">Dilation</option>
+      </select>
+    </div>
+
+    <div class="action-group">
+      <button id="batch-btn" onclick="runBatchTest()">Run Batch Test (10x)</button>
+    </div>
+  </div>
+
   <script src="/static/main.js"></script>
 </body>
+
 </html>

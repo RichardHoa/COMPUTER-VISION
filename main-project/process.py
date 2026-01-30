@@ -3,9 +3,17 @@ import cv2
 import numpy as np
 import os
 from Week1_Capturing.Week1_captureSaveImg import CaptureSaveImgProcessor
-from Week2_Filtering.Week2_Ex1_Grayscale import GrayscaleProcessor
-from Week2_Filtering.Week2_Ex2_Gaussian import GaussianProcessor
-from Week2_Filtering.Week2_Ex3_Median import MedianProcessor
+# Week 3 Filters
+from Week3_Filtering.Week3_Ex1_Grayscale import GrayscaleProcessor
+from Week3_Filtering.Week3_Ex2_GaussianBlur import GaussianProcessor
+from Week3_Filtering.Week3_Ex3_MedianBlur import MedianProcessor
+from Week3_Filtering.Week3_Ex4_SobelX import SobelXProcessor
+from Week3_Filtering.Week3_Ex5_Laplacian import LaplacianProcessor
+from Week3_Filtering.Week3_Ex6_Sharpening import SharpeningProcessor
+from Week3_Filtering.Week3_Ex7_Bilateral import BilateralProcessor
+from Week3_Filtering.Week3_Ex8_Thresholding import ThresholdingProcessor
+from Week3_Filtering.Week3_Ex9_Erosion import ErosionProcessor
+from Week3_Filtering.Week3_Ex10_Dilation import DilationProcessor
 
 
 class ImageProcessor:
@@ -487,34 +495,40 @@ class ImageProcessor:
     # Topic: All Course Concepts
     # =============================================================================
     
-    def process_frame(self, bgr_img):
-
-        img = cv2.imread("CapturedImage/test_capture.bmp")
-
+    def process_frame(self, bgr_img, filter_name="all"):
         if bgr_img is None:
             raise ValueError("Input frame is None")
         
         start_time = time.perf_counter()
         results = {}
         processed_img = bgr_img.copy()
-        
-        img_processor = CaptureSaveImgProcessor()
-        is_capture_success = img_processor.capture_and_save_image(bgr_img, "test_capture.bmp")
 
-        if is_capture_success:
-            img = cv2.imread("CapturedImage/test_capture.bmp")
-        if img is None:
-            print("Read image failed")
-            return None
+        # Save the captured image (simulating Week 1)
+        # img_processor = CaptureSaveImgProcessor()
+        # img_processor.capture_and_save_image(bgr_img, "test_capture.bmp")
 
-        median_filter = MedianProcessor()
-        success = median_filter.apply_median_filter(img)
+        processors = {
+            "grayscale": GrayscaleProcessor(),
+            "gaussian": GaussianProcessor(),
+            "median": MedianProcessor(),
+            "sobelx": SobelXProcessor(),
+            "laplacian": LaplacianProcessor(),
+            "sharpening": SharpeningProcessor(),
+            "bilateral": BilateralProcessor(),
+            "thresholding": ThresholdingProcessor(),
+            "erosion": ErosionProcessor(),
+            "dilation": DilationProcessor()
+        }
 
-        gray_processor = GrayscaleProcessor()
-        gray = gray_processor.convert_to_grayscale(img)
-
-        gaussian_processor = GaussianProcessor()
-        processed_img = gaussian_processor.apply_gaussian_filter(gray)
+        if filter_name in processors:
+            proc = processors[filter_name]
+            processed_img = proc.process(bgr_img)
+        else:
+             if filter_name == "all":
+                # Demo sequence
+                median_filter = MedianProcessor()
+                success = median_filter.process(bgr_img)
+                processed_img = median_filter.process(bgr_img)
         
         process_time_ms = (time.perf_counter() - start_time) * 1000
         return processed_img, results, process_time_ms

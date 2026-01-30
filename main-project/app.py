@@ -4,6 +4,9 @@ import threading
 import time
 import base64
 import numpy as np
+import os
+import re
+from datetime import datetime
 from process import ImageProcessor
 from camera import VideoCamera
 app = Flask(__name__)
@@ -84,7 +87,7 @@ def capture():
     """
     data = request.get_json()
     cam_id = int(data.get('cam_id'))
-    # step = data.get('step', 'all')  # Default to 'all' if not specified
+    filter_type = data.get('step', 'all')  # Map 'step' from frontend to filter choice, default to 'all'
     
     if cam_id not in cameras:
         return jsonify({'ok': False, 'error': 'invalid cam_id'}), 400
@@ -105,7 +108,7 @@ def capture():
     # Process image using ImageProcessor
     try:
         processor = ImageProcessor()
-        processed, results, process_time_ms = processor.process_frame(frame)
+        processed, results, process_time_ms = processor.process_frame(frame, filter_name=filter_type)
         
         # Convert processed image to base64
         ret2, jpg2 = cv2.imencode('.jpg', processed, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
@@ -125,6 +128,39 @@ def capture():
         })
     except Exception as e:
         return jsonify({'ok': False, 'error': f'Processing failed: {str(e)}'}), 500
+
+@app.route('/save_screenshot', methods=['POST'])
+def save_screenshot():
+    data = request.get_json()
+    image_data = data.get('image', '')
+    
+    if not image_data:
+        return jsonify({'ok': False, 'error': 'No image data'}), 400
+
+    try:
+        # Create Screenshots directory if not exists
+        if not os.path.exists('Screenshots'):
+            os.makedirs('Screenshots')
+            
+        # Decode base64
+        # Remove header "data:image/png;base64," if present
+        if ',' in image_data:
+            header, encoded = image_data.split(',', 1)
+        else:
+            encoded = image_data
+            
+        img_bytes = base64.b64decode(encoded)
+        
+        # Generator filename
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        filename = f"Screenshots/screenshot_{timestamp}.png"
+        
+        with open(filename, 'wb') as f:
+            f.write(img_bytes)
+            
+        return jsonify({'ok': True, 'file': filename})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
     # debug mode off in production
