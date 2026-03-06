@@ -3,15 +3,10 @@ import numpy as np
 import os
 import glob
 
-# Location of the image files
 INPUT_DIR = "../../assignment3"
 OUTPUT_DIR = "output"
 
 def region_of_interest(img, vertices):
-    """
-    Applies an image mask. Only keeps the region of the image defined by the polygon
-    formed from `vertices`. The rest of the image is set to black.
-    """
     mask = np.zeros_like(img)
     if len(img.shape) > 2:
         channel_count = img.shape[2]
@@ -37,7 +32,7 @@ def process_image(image_path, output_path):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     cv2.imwrite(os.path.join(out_dir, f"01_gray_{base_name}"), gray)
 
-    # 2. Apply Gaussian Blur (Optional but recommended to reduce noise)
+    # 2. Apply Gaussian Blur 
     kernel_size = 3
     gray = cv2.GaussianBlur(gray, (kernel_size, kernel_size), 0)
 
@@ -74,12 +69,13 @@ def process_image(image_path, output_path):
     lines = cv2.HoughLinesP(masked_edges, rho, theta, threshold, np.array([]),
                             minLineLength=min_line_length, maxLineGap=max_line_gap)
 
-    # 6. Draw the lines and center (Optional Extension)
+    # 6. Draw the lines 
     line_img = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8)
     
     if lines is not None:
         for line in lines:
             for x1, y1, x2, y2 in line:
+                # We skip horizontal line
                 if abs(y2 - y1) < 10:
                     continue
                 print(f"x1: {x1}, y1: {y1}, x2: {x2}, y2: {y2}")
@@ -87,10 +83,8 @@ def process_image(image_path, output_path):
 
     cv2.imwrite(os.path.join(out_dir, f"04_hough_lines_drawn_{base_name}"), line_img)
 
-    # 7. Overlay lines onto original image
-    result = cv2.addWeighted(img, 0.8, line_img, 1.0, 0)
+    result = cv2.addWeighted(img, 1.0, line_img, 1.0, 0)
 
-    # Save the result
     cv2.imwrite(output_path, result)
     print(f"Processed and saved: {output_path}")
 
